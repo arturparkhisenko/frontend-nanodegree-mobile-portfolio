@@ -489,7 +489,7 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
-function updatePositions() {
+var updatePositions = function updatePositions() {
     frame++;
     window.performance.mark('mark_start_frame');
 
@@ -506,10 +506,41 @@ function updatePositions() {
     if (frame % 10 === 0) {
         logAverageFrame(window.performance.getEntriesByName('measure_frame_duration'));
     }
-}
+};
 
+//polyfill for requestAnimationFrame https://gist.github.com/paulirish/1579671
+(function () {
+    var lastTime = 0, vendors = ['ms', 'moz', 'webkit', 'o'];
+    for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
+        || window[vendors[x] + 'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function (callback, element) {
+            var currTime = new Date().getTime(), timeToCall = Math.max(0, 16 - (currTime - lastTime)), id = window.setTimeout(function () {
+                    callback(currTime + timeToCall);
+                },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function (id) {
+            clearTimeout(id);
+        };
+})();
+
+//old code
 // runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+//window.addEventListener('scroll', updatePositions);
+
+//refactored code
+(function animloop() {
+    requestAnimationFrame(animloop, updatePositions());
+})();
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function () {
@@ -528,5 +559,5 @@ document.addEventListener('DOMContentLoaded', function () {
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
         document.getElementById('movingPizzas1').appendChild(elem);
     }
-    updatePositions();
+    //updatePositions();
 });
