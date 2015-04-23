@@ -412,38 +412,29 @@ var resizePizzas = function (size) {
     };
 
     changeSliderLabel(size);
+    
+    // Iterates through pizza elements on the page and changes their widths
+    var changePizzaSizes = function changePizzaSizes(size) {
+        var randomPizzaContainers = document.getElementsByClassName('randomPizzaContainer'),
+            PizzaContainersLength = randomPizzaContainers.length,
 
-    // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
-    var determineDx = function determineDx(elem, size) {
-        var oldwidth = elem.offsetWidth,
-            windowwidth = document.getElementById('randomPizzas').offsetWidth,
-            oldsize = oldwidth / windowwidth;
-
-        // TODO: change to 3 sizes? no more xl?
         // Changes the slider value to a percent width
-        var sizeSwitcher = function sizeSwitcher(size) {
+        sizeSwitcher = function sizeSwitcher(size) {
             switch (size) {
                 case "1":
-                    return 0.25;
+                    return 25 + '%';
                 case "2":
-                    return 0.3333;
+                    return 33.33 + '%';
                 case "3":
-                    return 0.5;
+                    return 50 + '%';
                 default:
                     console.log('bug in sizeSwitcher');
             }
         };
 
-        return (sizeSwitcher(size) - oldsize) * windowwidth;
-    };
-
-    // Iterates through pizza elements on the page and changes their widths
-    var changePizzaSizes = function changePizzaSizes(size) {
-        var dx = determineDx(document.getElementsByClassName('randomPizzaContainer')[0], size),
-            newwidth = (document.getElementsByClassName('randomPizzaContainer')[0].offsetWidth + dx) + 'px',
-            randomPizzaContainerLength = document.getElementsByClassName('randomPizzaContainer').length;
-        for (var i = 0; i < randomPizzaContainerLength; i++) {
-            document.getElementsByClassName('randomPizzaContainer')[i].style.width = newwidth;
+        //cycle to change all of them
+        for (var i = 0; i < PizzaContainersLength; i++) {
+            randomPizzaContainers[i].style.width = newwidth;
         }
     };
 
