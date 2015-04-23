@@ -412,25 +412,27 @@ var resizePizzas = function (size) {
     };
 
     changeSliderLabel(size);
-    
+
     // Iterates through pizza elements on the page and changes their widths
     var changePizzaSizes = function changePizzaSizes(size) {
         var randomPizzaContainers = document.getElementsByClassName('randomPizzaContainer'),
             PizzaContainersLength = randomPizzaContainers.length,
+            newwidth;
 
         // Changes the slider value to a percent width
-        sizeSwitcher = function sizeSwitcher(size) {
-            switch (size) {
-                case "1":
-                    return 25 + '%';
-                case "2":
-                    return 33.33 + '%';
-                case "3":
-                    return 50 + '%';
-                default:
-                    console.log('bug in sizeSwitcher');
-            }
-        };
+        switch (size) {
+            case '1':
+                newwidth = 25 + '%';
+                break;
+            case '2':
+                newwidth = 33.33 + '%';
+                break;
+            case '3':
+                newwidth = 50 + '%';
+                break;
+            default:
+                console.log('bug in sizeSwitcher');
+        }
 
         //cycle to change all of them
         for (var i = 0; i < PizzaContainersLength; i++) {
@@ -505,7 +507,7 @@ var updatePositions = function updatePositions() {
     for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
         window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
-        || window[vendors[x] + 'CancelRequestAnimationFrame'];
+            || window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
     if (!window.requestAnimationFrame)
